@@ -231,13 +231,13 @@ func Capitalize(s string) string {
 // IsString
 //
 //	@Description: 判断参数是否是string
-//	@param s
+//	@param v interface {}
 //	@return bool
-func IsString(s interface{}) bool {
-	if s == nil {
+func IsString(v interface{}) bool {
+	if v == nil {
 		return false
 	}
-	switch s.(type) {
+	switch v.(type) {
 	case string:
 		return true
 	default:
@@ -248,7 +248,7 @@ func IsString(s interface{}) bool {
 // Reverse
 //
 //	@Description: 反转字符串
-//	@param s
+//	@param s 待反转的字符串
 //	@return string
 func Reverse(s string) string {
 	r := []rune(s)
@@ -260,6 +260,22 @@ func Reverse(s string) string {
 	return string(r)
 }
 
+// Wrap
+//
+//	@Description: 指定字符 包裹string
+//	@param s	目标字符串
+//	@param chars 指定字符串
+//	@return string
 func Wrap(s, chars string) string {
 	return Pad(s, len(s)+(len(chars)*2), chars)
+}
+
+// UnWrap
+//
+//	@Description: 清除包裹string的指定字符
+//	@param s	目标字符串
+//	@param chars 指定字符串
+//	@return string
+func UnWrap(s, chars string) string {
+	return Trim(s, chars)
 }
