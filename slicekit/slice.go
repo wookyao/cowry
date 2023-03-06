@@ -26,11 +26,11 @@ func Includes[T comparable](s []T, target T) bool {
 //
 //	@Description:	切片中是否包含 满足条件的 元素
 //	@param s
-//	@param predicate
+//	@param comparator
 //	@return bool
-func IncludesBy[T interface{}](s []T, predicate func(item T) bool) bool {
+func IncludesBy[T interface{}](s []T, comparator func(item T) bool) bool {
 	for _, item := range s {
-		if predicate(item) {
+		if comparator(item) {
 			return true
 		}
 	}
@@ -59,10 +59,10 @@ func IncludesSubSlice[T comparable](s []T, sub []T) bool {
 //
 //	@Description: 循环遍历
 //	@param s
-//	@param iteratee
-func Each[T any](s []T, iteratee func(idx int, item T)) {
+//	@param comparator
+func Each[T any](s []T, comparator func(idx int, item T)) {
 	for index, val := range s {
-		iteratee(index, val)
+		comparator(index, val)
 	}
 }
 
@@ -220,17 +220,66 @@ func EqualWith[T comparable](s1, s2 []T, comparator func(v1, v2 T) bool) bool {
 	return true
 }
 
+// Every Every[T comparable]
+//
+//	@Description: 切片中所有元素都满足指定条件
+//	@param s1
+//	@param comparator
+//	@return bool
+func Every[T comparable](s []T, comparator func(idx int, item T) bool) bool {
+	for idx, val := range s {
+		if !comparator(idx, val) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// None None[T any]
+//
+//	@Description: 切片中 没有满足指定条件的元素
+//	@param s
+//	@param comparator
+//	@return bool
+func None[T any](s []T, comparator func(idx int, item T) bool) bool {
+
+	for i, v := range s {
+		if comparator(i, v) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// Some Some[T comparable]
+//
+//	@Description: 切片中有满足指定条件的元素
+//	@param s
+//	@param comparator
+//	@return bool
+func Some[T comparable](s []T, comparator func(idx int, item T) bool) bool {
+	for idx, val := range s {
+		if comparator(idx, val) {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Filter Filter[T interface{}]
 //
 //	@Description: 筛选符合条件的切片
 //	@param s
-//	@param predicate
+//	@param comparator
 //	@return []T
-func Filter[T interface{}](s []T, predicate func(idx int, item T) bool) []T {
+func Filter[T interface{}](s []T, comparator func(idx int, item T) bool) []T {
 	sliceList := make([]T, 0, cap(s))
 
 	for index, val := range s {
-		if predicate(index, val) {
+		if comparator(index, val) {
 			sliceList = append(sliceList, val)
 		}
 	}
@@ -242,13 +291,13 @@ func Filter[T interface{}](s []T, predicate func(idx int, item T) bool) []T {
 //
 //	@Description: 按照 规则 筛选并生成新的切片
 //	@param s
-//	@param iteratee
+//	@param comparator
 //	@return []D
-func FilterMap[T any, D any](s []T, iteratee func(idx int, item T) (D, bool)) []D {
+func FilterMap[T any, D any](s []T, comparator func(idx int, item T) (D, bool)) []D {
 	result := make([]D, 0, cap(s))
 
 	for index, val := range s {
-		if res, ok := iteratee(index, val); ok {
+		if res, ok := comparator(index, val); ok {
 			result = append(result, res)
 		}
 	}
@@ -260,14 +309,113 @@ func FilterMap[T any, D any](s []T, iteratee func(idx int, item T) (D, bool)) []
 //
 //	@Description: 按照规则 生成一个新数组
 //	@param s
-//	@param iteratee
+//	@param comparator
 //	@return []T
-func Map[T interface{}](s []T, iteratee func(idx int, item T) T) []T {
+func Map[T interface{}](s []T, comparator func(idx int, item T) T) []T {
 	result := make([]T, len(s), cap(s))
 
 	for index, val := range s {
-		result[index] = iteratee(index, val)
+		result[index] = comparator(index, val)
 
 	}
+	return result
+}
+
+// Count Count[T comparable]
+//
+//	@Description: 计算指定元素在切片中出现的次数
+//	@param s
+//	@param target
+//	@return int
+func Count[T comparable](s []T, target T) int {
+	count := 0
+
+	for _, v := range s {
+		if v == target {
+			count++
+		}
+	}
+
+	return count
+}
+
+// CountBy CountBy[T comparable]
+//
+//	@Description: 计算切片中 满足指定条件的元素个数
+//	@param s
+//	@param comparator
+//	@return int
+func CountBy[T comparable](s []T, comparator func(idx int, item T) bool) int {
+	count := 0
+
+	for i, v := range s {
+		if comparator(i, v) {
+			count++
+		}
+	}
+	return count
+}
+
+// Find Find[T comparable]
+//
+//	@Description: 按照指定条件 从左至右筛选符合条件的地一个元素
+//	@param s
+//	@param comparator
+//	@return *T
+//	@return bool
+func Find[T comparable](s []T, comparator func(idx int, item T) bool) (*T, bool) {
+	index := -1
+
+	for i, v := range s {
+		if comparator(i, v) {
+			index = i
+			break
+		}
+	}
+
+	if index == -1 {
+		return nil, false
+	}
+
+	return &s[index], true
+}
+
+// FindLast FindLast[T comparable]
+//
+//	@Description: 按照指定条件 从右至左筛选符合条件的地一个元素
+//	@param s
+//	@param comparator
+//	@return *T
+//	@return bool
+func FindLast[T comparable](s []T, comparator func(idx int, item T) bool) (*T, bool) {
+
+	index := -1
+
+	for i := len(s) - 1; i >= 0; i-- {
+		if comparator(i, s[i]) {
+			index = i
+			break
+		}
+	}
+
+	if index == -1 {
+		return nil, false
+	}
+	return &s[index], true
+}
+
+// Fill Fill[T interface{}]
+//
+//	@Description: 填充指定长度，指定元素的切片
+//	@param v
+//	@param size
+//	@return []T
+func Fill[T interface{}](v T, size uint) []T {
+	result := make([]T, size)
+
+	for i := 0; i < int(size); i++ {
+		result = append(result, v)
+	}
+
 	return result
 }
