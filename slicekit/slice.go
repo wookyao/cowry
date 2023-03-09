@@ -1,7 +1,6 @@
 package slicekit
 
 import (
-	"fmt"
 	"github.com/wookyao/cowry/constraints"
 	"math"
 	"sort"
@@ -18,8 +17,9 @@ func Includes[T comparable](s []T, target T) bool {
 		return false
 	}
 
-	for _, item := range s {
-		if target == item {
+	i, sLen := 0, len(s)
+	for ; i < sLen; i++ {
+		if target == s[i] {
 			return true
 		}
 	}
@@ -34,8 +34,9 @@ func Includes[T comparable](s []T, target T) bool {
 //	@param comparator
 //	@return bool
 func IncludesBy[T interface{}](s []T, comparator func(item T) bool) bool {
-	for _, item := range s {
-		if comparator(item) {
+	i, sLen := 0, len(s)
+	for ; i < sLen; i++ {
+		if comparator(s[i]) {
 			return true
 		}
 	}
@@ -50,9 +51,9 @@ func IncludesBy[T interface{}](s []T, comparator func(item T) bool) bool {
 //	@param sub slice
 //	@return bool
 func IncludesSubSlice[T comparable](s []T, sub []T) bool {
-
-	for _, item := range sub {
-		if !Includes(s, item) {
+	i, sLen := 0, len(sub)
+	for ; i < sLen; i++ {
+		if !Includes(s, sub[i]) {
 			return false
 		}
 	}
@@ -66,8 +67,9 @@ func IncludesSubSlice[T comparable](s []T, sub []T) bool {
 //	@param s
 //	@param comparator
 func Each[T any](s []T, comparator func(idx int, item T)) {
-	for index, val := range s {
-		comparator(index, val)
+	i, sLen := 0, len(s)
+	for ; i < sLen; i++ {
+		comparator(i, s[i])
 	}
 }
 
@@ -107,10 +109,10 @@ func Chunk[T any](s []T, size int) [][]T {
 func Compact[T comparable](s []T) []T {
 	var zero T
 
-	result := make([]T, 0, len(s))
-	for _, val := range s {
-		if val != zero {
-			result = append(result, val)
+	i, sLen, result := 0, len(s), make([]T, 0, len(s))
+	for ; i < sLen; i++ {
+		if s[i] != zero {
+			result = append(result, s[i])
 		}
 	}
 
@@ -452,8 +454,6 @@ func Sort[T constraints.Ordered](s []T, sortOrder ...string) {
 	if len(sortOrder) > 0 && sortOrder[0] != "" {
 		order = sortOrder[0]
 	}
-
-	fmt.Println(order)
 
 	sort.Slice(s, func(i, j int) bool {
 		if order == "desc" {
