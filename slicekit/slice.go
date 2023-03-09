@@ -1,7 +1,10 @@
 package slicekit
 
 import (
+	"fmt"
+	"github.com/wookyao/cowry/constraints"
 	"math"
+	"sort"
 )
 
 // Includes Includes[T comparable]
@@ -420,4 +423,52 @@ func Fill[T interface{}](v T, size uint) []T {
 	}
 
 	return result
+}
+
+// Copy Copy[T any]
+//
+//	@Description: 浅拷贝
+//	@param s
+//	@return []T
+func Copy[T any](s []T) []T {
+	slice := make([]T, 0, cap(s))
+
+	for _, v := range s {
+		slice = append(slice, v)
+	}
+
+	return slice
+}
+
+// Sort - Sort[T constraints.Ordered]
+//
+// @Description: 排序
+// @param s
+// @param sortOrder
+func Sort[T constraints.Ordered](s []T, sortOrder ...string) {
+	// asc 升序 desc降序
+	order := "desc"
+
+	if len(sortOrder) > 0 && sortOrder[0] != "" {
+		order = sortOrder[0]
+	}
+
+	fmt.Println(order)
+
+	sort.Slice(s, func(i, j int) bool {
+		if order == "desc" {
+			return s[i] > s[j]
+		} else {
+			return s[i] < s[j]
+		}
+	})
+}
+
+// SortBy SortBy[T any]
+//
+//	@Description: 根据指定规则排序
+//	@param s
+//	@param comparator
+func SortBy[T any](s []T, comparator func(i, j int) bool) {
+	sort.Slice(s, comparator)
 }

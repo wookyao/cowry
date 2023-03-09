@@ -405,3 +405,41 @@ func ExampleFill() {
 	// Output:
 	// [5 5 5 5 5 5 5 5 5 5]
 }
+
+func ExampleSort() {
+	s1 := []int{5, 9, 6, 1, 4, 1, 15, 95, 12}
+	s2 := Copy(s1)
+
+	Sort(s1)
+	Sort(s2, "as")
+
+	fmt.Println(s1)
+	fmt.Println(s2)
+
+	// Output:
+	// [95 15 12 9 6 5 4 1 1]
+	// [1 1 4 5 6 9 12 15 95]
+}
+
+func ExampleSortBy() {
+	type Student struct {
+		Name string
+		Age  int
+	}
+
+	s1 := []Student{
+		Student{Name: "4", Age: 18},
+		Student{Name: "1", Age: 21},
+		Student{Name: "3", Age: 19},
+		Student{Name: "2", Age: 20},
+	}
+
+	SortBy(s1, func(i, j int) bool {
+		return s1[i].Age < s1[j].Age
+	})
+
+	fmt.Println(s1)
+
+	// Output:
+	// [{4 18} {3 19} {2 20} {1 21}]
+}
