@@ -1,6 +1,8 @@
 package slicekit
 
-import "math"
+import (
+	"math"
+)
 
 // Includes Includes[T comparable]
 //
@@ -74,11 +76,11 @@ func Each[T any](s []T, comparator func(idx int, item T)) {
 //	@return [][]T
 func Chunk[T any](s []T, size int) [][]T {
 	if size >= len(s) {
-		r := make([][]T, 1, 1)
+		r := make([][]T, 0, 1)
 		r = append(r, s)
 		return r
 	}
-	capSize := int(math.Ceil(float64(len(s) / size)))
+	capSize := int(math.Ceil(float64(len(s)) / float64(size)))
 	result := make([][]T, 0, capSize)
 
 	for i := 0; i < capSize; i++ {
@@ -411,7 +413,7 @@ func FindLast[T comparable](s []T, comparator func(idx int, item T) bool) (*T, b
 //	@param size
 //	@return []T
 func Fill[T interface{}](v T, size uint) []T {
-	result := make([]T, size)
+	result := make([]T, 0, size)
 
 	for i := 0; i < int(size); i++ {
 		result = append(result, v)

@@ -2,18 +2,21 @@ package slicekit
 
 import (
 	"fmt"
-	"reflect"
-	"testing"
+	"strconv"
 )
 
-func TestIncludes(t *testing.T) {
+func ExampleIncludes() {
 	var s = []string{"abc", "efg", "xyz"}
 
 	fmt.Println(Includes(s, "abc"))
 	fmt.Println(Includes(s, "opq"))
+
+	// Output:
+	// true
+	// false
 }
 
-func TestIncludesBy(t *testing.T) {
+func ExampleIncludesBy() {
 	type Carouse struct {
 		Name  string
 		Price int
@@ -28,9 +31,13 @@ func TestIncludesBy(t *testing.T) {
 		return item.Name == "go"
 	})
 	fmt.Println(ok)
+
+	// Output:
+	// true
+	// false
 }
 
-func TestIncludesSubSlice(t *testing.T) {
+func ExampleIncludesSubSlice() {
 	var s = []string{"abc", "123", "xyz", "189", "pll"}
 	var sub = []string{"123", "189", "xyz"}
 
@@ -41,9 +48,53 @@ func TestIncludesSubSlice(t *testing.T) {
 	ok = IncludesSubSlice(s, []string{"1", "2", "3"})
 
 	fmt.Println(ok)
+
+	// Output:
+	// true
+	// false
 }
 
-func TestFilter(t *testing.T) {
+func ExampleEach() {
+	slice := []int{1, 2, 3, 4, 5, 6}
+
+	Each(slice, func(idx int, item int) {
+		fmt.Println(item, idx)
+	})
+
+	// Output:
+	//1 0
+	//2 1
+	//3 2
+	//4 3
+	//5 4
+	//6 5
+}
+
+func ExampleChunk() {
+	arr := []string{"a", "b", "c", "d", "e"}
+
+	result1 := Chunk(arr, 1)
+	result2 := Chunk(arr, 2)
+	result3 := Chunk(arr, 3)
+	result4 := Chunk(arr, 4)
+	result5 := Chunk(arr, 5)
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+	fmt.Println(result3)
+	fmt.Println(result4)
+	fmt.Println(result5)
+
+	// Output:
+	// [[a] [b] [c] [d] [e]]
+	// [[a b] [c d] [e]]
+	// [[a b c] [d e]]
+	// [[a b c d] [e]]
+	// [[a b c d e]]
+
+}
+
+func ExampleFilter() {
 
 	type Carouse struct {
 		Name  string
@@ -75,9 +126,43 @@ func TestFilter(t *testing.T) {
 	fmt.Println(list2)
 	fmt.Println(list3)
 
+	// Output:
+	//[3 4 5 6 7 8 9]
+	// [{go 99} {c# 89} {java 129} {c/c++ 159}]
+	// [{go 99} {python 50} {javascript 29}]
+
 }
 
-func TestMap(t *testing.T) {
+func ExampleFilterMap() {
+	s1 := []int{1, 2, 3}
+
+	getEvenNumStr := func(i, num int) (string, bool) {
+		if num%2 == 0 {
+			return strconv.FormatInt(int64(num), 10), true
+		}
+		return "", false
+	}
+
+	result1 := FilterMap(s1, getEvenNumStr)
+
+	fmt.Println(result1)
+
+	// Output:
+	// [2]
+}
+
+func ExampleConcat() {
+	s1, s2 := []int{1, 2, 3}, []int{10, 12, 38}
+
+	result1 := Concat(s1, s2)
+
+	fmt.Println(result1)
+
+	// Output:
+	// [1 2 3 10 12 38]
+}
+
+func ExampleMap() {
 	type Carouse struct {
 		Name  string
 		Price int
@@ -95,31 +180,14 @@ func TestMap(t *testing.T) {
 		return item
 	})
 
-	fmt.Println(courseList)
-
 	fmt.Println(list1)
 
+	// Output:
+	// [{go 198} {python 100} {c# 178} {javascript 58} {java 258} {c/c++ 318}]
+
 }
 
-func TestChunk(t *testing.T) {
-	arr := []string{"a", "b", "c", "d", "e"}
-
-	result1 := Chunk(arr, 1)
-	result2 := Chunk(arr, 2)
-	result3 := Chunk(arr, 3)
-	result4 := Chunk(arr, 4)
-	result5 := Chunk(arr, 5)
-	result6 := Chunk(arr, 6)
-
-	fmt.Println(result1)
-	fmt.Println(result2)
-	fmt.Println(result3)
-	fmt.Println(result4)
-	fmt.Println(result5)
-	fmt.Println(result6)
-}
-
-func TestCompact(t *testing.T) {
+func ExampleCompact() {
 
 	var s1 = []int{0, 1, 2}
 	var s2 = []string{"0", "1", ""}
@@ -133,16 +201,24 @@ func TestCompact(t *testing.T) {
 	fmt.Println(r2)
 	fmt.Println(r3)
 
-	var list = [3]int{1, 2, 3}
-
-	typeOfList := reflect.TypeOf(list)
-	fmt.Println(typeOfList.Kind())
-
-	typeOfS1 := reflect.TypeOf(s1)
-	fmt.Println(typeOfS1.Kind())
+	// Output:
+	// [1 2]
+	// [0 1]
+	// [true true]
 }
 
-func TestDifferenceWith(t *testing.T) {
+func ExampleDifference() {
+	slice1 := []int{1, 2, 3, 4, 5}
+	slice2 := []int{4, 5}
+
+	result1 := Difference(slice1, slice2)
+	fmt.Println(result1)
+
+	// Output:
+	// [1 2 3]
+}
+
+func ExampleDifferenceWith() {
 	slice1 := []int{1, 2, 3, 4, 5}
 	slice2 := []int{4, 5, 6, 7, 8}
 
@@ -153,9 +229,12 @@ func TestDifferenceWith(t *testing.T) {
 	result := DifferenceWith(slice1, slice2, isDouble)
 
 	fmt.Println(result)
+
+	// Output:
+	// [1 5]
 }
 
-func TestEqual(t *testing.T) {
+func ExampleEqual() {
 	slice1 := []int{1, 2, 3}
 	slice2 := []int{1, 2, 3}
 	slice3 := []int{1, 3, 2}
@@ -167,7 +246,7 @@ func TestEqual(t *testing.T) {
 	fmt.Println(result2)
 }
 
-func TestEqualWith(t *testing.T) {
+func ExampleEqualWith() {
 	slice1 := []int{1, 2, 3}
 	slice2 := []int{2, 4, 6}
 
@@ -181,4 +260,148 @@ func TestEqualWith(t *testing.T) {
 
 	// Output:
 	// true
+}
+
+func ExampleEvery() {
+	s1, s2 := []int{1, 2, 3, 4, 5, 6, 7}, []int{2, 4, 6, 8, 10}
+
+	result1 := Every(s1, func(idx int, item int) bool {
+		return item < 10
+	})
+	result2 := Every(s2, func(idx int, item int) bool {
+		return item%2 == 0
+	})
+	result3 := Every(s2, func(idx int, item int) bool {
+		return item+1 < 10
+	})
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+	fmt.Println(result3)
+
+	// Output:
+	//true
+	//true
+	//false
+}
+
+func ExampleNone() {
+	s1, s2 := []int{1, 2, 3, 4, 5, 6, 7}, []int{2, 4, 6, 8, 10}
+
+	result1 := None(s1, func(idx int, item int) bool {
+		return item == 1
+	})
+
+	result2 := None(s2, func(idx int, item int) bool {
+		return item%2 == 0
+	})
+
+	result3 := None(s1, func(idx int, item int) bool {
+		return item == 10
+	})
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+	fmt.Println(result3)
+
+	// Output
+	// false
+	// false
+	// true
+}
+
+func ExampleSome() {
+	s1, s2 := []int{1, 2, 3, 4, 5, 6, 7}, []int{2, 4, 6, 8, 10}
+
+	result1 := Some(s1, func(idx int, item int) bool {
+		return item == 1
+	})
+
+	result2 := Some(s2, func(idx int, item int) bool {
+		return item%2 == 0
+	})
+
+	result3 := Some(s1, func(idx int, item int) bool {
+		return item == 10
+	})
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+	fmt.Println(result3)
+
+	// Output
+	// true
+	// true
+	// false
+}
+
+func ExampleCount() {
+	nums := []int{1, 2, 3, 3, 4}
+
+	result1 := Count(nums, 1)
+	result2 := Count(nums, 3)
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+
+	// Output:
+	// 1
+	// 2
+}
+
+func ExampleCountBy() {
+	nums := []int{1, 2, 3, 4, 5}
+
+	isEven := func(i, num int) bool {
+		return num%2 == 0
+	}
+
+	result := CountBy(nums, isEven)
+
+	fmt.Println(result)
+
+	// Output:
+	// 2
+}
+
+func ExampleFind() {
+	nums := []int{1, 2, 3, 4, 5}
+
+	isEven := func(i, num int) bool {
+		return num%2 == 0
+	}
+
+	result, ok := Find(nums, isEven)
+
+	fmt.Println(*result)
+	fmt.Println(ok)
+
+	// Output:
+	// 2
+	// true
+}
+
+func ExampleFindLast() {
+	nums := []int{1, 2, 3, 4, 5}
+
+	isEven := func(i, num int) bool {
+		return num%2 == 0
+	}
+
+	result, ok := FindLast(nums, isEven)
+
+	fmt.Println(*result)
+	fmt.Println(ok)
+
+	// Output:
+	// 4
+	// true
+}
+
+func ExampleFill() {
+	list := Fill(5, 10)
+	fmt.Println(list)
+
+	// Output:
+	// [5 5 5 5 5 5 5 5 5 5]
 }
