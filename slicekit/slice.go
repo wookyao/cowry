@@ -3,7 +3,9 @@ package slicekit
 import (
 	"github.com/wookyao/cowry/constraints"
 	"math"
+	"math/rand"
 	"sort"
+	"time"
 )
 
 // Includes Includes[T comparable]
@@ -433,13 +435,7 @@ func Fill[T interface{}](v T, size uint) []T {
 //	@param s
 //	@return []T
 func Copy[T any](s []T) []T {
-	slice := make([]T, 0, cap(s))
-
-	for _, v := range s {
-		slice = append(slice, v)
-	}
-
-	return slice
+	return sliceCopy(s)
 }
 
 // Sort - Sort[T constraints.Ordered]
@@ -471,4 +467,177 @@ func Sort[T constraints.Ordered](s []T, sortOrder ...string) {
 //	@param comparator
 func SortBy[T any](s []T, comparator func(i, j int) bool) {
 	sort.Slice(s, comparator)
+}
+
+// ToSlice ToSlice[T any]
+//
+//	@Description: 将输入参数转成slice
+//	@param items
+//	@return []T
+func ToSlice[T any](items ...T) []T {
+	var s = make([]T, 0, len(items))
+
+	i, sLen := 0, len(items)
+
+	for ; i < sLen; i++ {
+		s = append(s, items[i])
+	}
+
+	return s
+}
+
+// Without[T comparable]
+//
+//	@Description: 剔除指定元素
+//	@param s
+//	@param items
+//	@return []T
+func Without[T comparable](s []T, items ...T) []T {
+	if len(s) == 0 || len(items) == 0 {
+		return s
+	}
+
+	i, sLen, list := 0, len(s), make([]T, 0, len(s))
+
+	for ; i < sLen; i++ {
+		if !Includes(items, s[i]) {
+			list = append(list, s[i])
+		}
+	}
+
+	return list
+}
+
+// IndexOf IndexOf[T comparable]
+//
+//	@Description: 查找目标元素首次出现的下标
+//	@param s
+//	@param item
+//	@return int
+func IndexOf[T comparable](s []T, item T) int {
+	index := -1
+
+	for i := 0; i < len(s); i++ {
+		if s[i] == item {
+			index = i
+			break
+		}
+	}
+
+	return index
+}
+
+// IndexOfLast IndexOfLast[T comparable]
+//
+//	@Description: 查找目标元素最后出现的下标
+//	@param s
+//	@param item
+//	@return int
+func IndexOfLast[T comparable](s []T, item T) int {
+	index, i := -1, len(s)-1
+
+	for ; i >= 0; i-- {
+		if s[i] == item {
+			index = i
+			break
+		}
+	}
+
+	return index
+}
+
+func Reverser[T any](s []T) {
+	i, j := 0, len(s)-1
+
+	for ; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+}
+
+// Shuffle Shuffle[T any]
+//
+//	@Description: 随机打乱元素位置
+//	@param s
+func Shuffle[T any](s []T) {
+	rand.Seed(time.Now().Unix()) // 取保每次的随机值与上一次不同
+
+	rand.Shuffle(len(s), func(i, j int) {
+		s[i], s[j] = s[j], s[i]
+	})
+}
+
+// Shift Shift[T any]
+//
+//	@Description: 不改变原切片 删除第一个元素, 返回新切片和删除的元素
+//	@param s
+//	@return []T
+//	@return T
+func Shift[T any](s []T) ([]T, T) {
+	if len(s) == 0 {
+		var t T
+		return s, t
+	}
+
+	return s[1:], s[0]
+}
+
+// Pop Pop[T any]
+//
+//	@Description: 不改变原切片 方法从切片中删除最后一个元素，返回新切片和删除的元素
+//	@param s
+//	@return []T
+//	@return T
+func Pop[T any](s []T) ([]T, T) {
+	if len(s) == 0 {
+		var t T
+		return s, t
+	}
+
+	return s[:len(s)-1], s[len(s)-1]
+}
+
+// Push Push[T any]
+//
+//	@Description: 不改变原切片 向切片尾部追加元素，返回新切片
+//	@param s
+//	@param items
+//	@return []T
+func Push[T any](s []T, items ...T) []T {
+	return append(s, items...)
+}
+
+// Unshift Unshift[T any]
+//
+//	@Description: 不改变原切片 向切片头部追加元素，返回新切片
+//	@param s
+//	@param items
+//	@return []T
+func Unshift[T any](s []T, items ...T) []T {
+	return append(items, s...)
+}
+
+// Insert Insert[T any]
+//
+//	@Description:不改变原切片 插入元素到指定下标，返回新切片
+//	@param s
+//	@param index
+//	@param items
+//	@return []T
+func Insert[T any](s []T, index int, items ...T) []T {
+	if len(items) == 0 {
+		return s
+	}
+
+	if index >= len(s) {
+		return Push(s, items...)
+	} else if index <= 0 {
+		return Unshift(s, items...)
+	}
+
+	left, right := sliceCopy(s[:index]), sliceCopy(s[index:])
+
+	tmp := append(left, items...)
+	tmp = append(tmp, right...)
+
+	return tmp
 }

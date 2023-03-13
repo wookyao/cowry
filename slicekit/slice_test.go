@@ -443,3 +443,168 @@ func ExampleSortBy() {
 	// Output:
 	// [{4 18} {3 19} {2 20} {1 21}]
 }
+
+func ExampleToSlice() {
+	type Stu struct {
+		Name string
+	}
+
+	result1 := ToSlice(1, 2, 3, 4, 5, 6)
+	result2 := ToSlice("go", "py", "c", "c++", "js", "java")
+	result3 := ToSlice(Stu{Name: "zhangSan"}, Stu{Name: "liSi"})
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+	fmt.Println(result3)
+
+	// Output:
+	// [1 2 3 4 5 6]
+	// [go py c c++ js java]
+	// [{zhangSan} {liSi}]
+}
+
+func ExampleWithout() {
+	s := []int{1, 2, 3, 4, 5, 6}
+
+	result1 := Without(s, 1, 2)
+
+	fmt.Println(result1)
+
+	// Output:
+	// [3 4 5 6]
+}
+
+func ExampleIndexOf() {
+	result1 := IndexOf([]int{1, 2, 3}, 2)
+	result2 := IndexOf([]int{2, 2, 2}, 2)
+	result3 := IndexOf([]int{20, 12, 22}, 2)
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+	fmt.Println(result3)
+
+	// Output:
+	// 1
+	// 0
+	// -1
+}
+
+func ExampleIndexOfLast() {
+	result1 := IndexOfLast([]int{1, 2, 3, 2}, 2)
+	result2 := IndexOfLast([]int{2, 2, 2}, 2)
+	result3 := IndexOfLast([]int{20, 12, 22}, 2)
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+	fmt.Println(result3)
+
+	// Output:
+	// 3
+	// 2
+	// -1
+}
+
+func ExampleReverser() {
+	result1 := []int{1, 2, 3, 4, 5, 6}
+	Reverser(result1)
+
+	fmt.Println(result1)
+
+	// Output:
+	// [6 5 4 3 2 1]
+}
+
+func ExampleShuffle() {
+	result1 := []int{1, 2, 3, 4}
+	Shuffle(result1)
+
+	fmt.Println(result1[0] == 1 || result1[0] == 2 || result1[0] == 3 || result1[0] == 4)
+
+	// Output:
+	// true
+}
+
+func ExampleShift() {
+
+	source := []int{1, 2, 3, 4}
+
+	result1, f1 := Shift(source)
+	result2, f2 := Shift(result1)
+	result3, f3 := Shift(result2)
+	result4, f4 := Shift(result3)
+	result5, f5 := Shift(result4)
+
+	fmt.Println(result1, f1)
+	fmt.Println(result2, f2)
+	fmt.Println(result3, f3)
+	fmt.Println(result4, f4)
+	fmt.Println(result5, f5)
+
+	// Output:
+	// [2 3 4] 1
+	// [3 4] 2
+	// [4] 3
+	// [] 4
+	// [] 0
+}
+
+func ExamplePop() {
+
+	source := []int{1, 2, 3, 4}
+
+	result1, f1 := Pop(source)
+
+	result2, f2 := Pop(result1)
+	result3, f3 := Pop(result2)
+	result4, f4 := Pop(result3)
+	result5, f5 := Pop(result4)
+
+	fmt.Println(result1, f1)
+	fmt.Println(result2, f2)
+	fmt.Println(result3, f3)
+	fmt.Println(result4, f4)
+	fmt.Println(result5, f5)
+
+	// Output:
+	// [1 2 3] 4
+	// [1 2] 3
+	// [1] 2
+	// [] 1
+	// [] 0
+}
+
+func ExamplePush() {
+
+	result1 := Push([]int{1, 2, 3}, 4)
+
+	fmt.Println(result1)
+
+	// Output:
+	// [1 2 3 4]
+}
+
+func ExampleUnshift() {
+	result1 := Unshift([]int{1, 2, 3}, 4)
+	fmt.Println(result1)
+
+	// Output:
+	// [4 1 2 3]
+
+}
+
+func ExampleInsert() {
+	src1 := []int{1, 2, 3, 4, 5, 6}
+
+	result1 := Insert(src1, 1, 10, 11)
+	result2 := Insert(src1, 10, 11)
+
+	fmt.Println(result1)
+	fmt.Println(result2)
+	fmt.Println(src1)
+
+	// Output:
+	// [1 10 11 2 3 4 5 6]
+	// [1 2 3 4 5 6 11]
+	// [1 2 3 4 5 6]
+
+}
