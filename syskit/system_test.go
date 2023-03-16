@@ -1,6 +1,8 @@
 package syskit
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func ExampleGetOsBits() {
 	b := GetOsBits()
