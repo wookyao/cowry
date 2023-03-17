@@ -8,3 +8,8 @@ func ShortIF(condition bool, ifThen, ifElse interface{}) interface{} {
 		return ifElse
 	}
 }
+
+// IsNil 值验证
+//func IsNil(v any) bool {
+//
+//}
