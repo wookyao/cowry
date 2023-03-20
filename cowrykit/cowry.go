@@ -3,7 +3,7 @@ package cowrykit
 import "fmt"
 
 // ShortIF 模拟三目运算
-func ShortIF(condition bool, ifThen, ifElse interface{}) interface{} {
+func ShortIF[T interface{}](condition bool, ifThen, ifElse T) T {
 	if condition {
 		return ifThen
 	} else {
