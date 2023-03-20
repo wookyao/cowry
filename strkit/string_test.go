@@ -94,3 +94,21 @@ func TestReverse(t *testing.T) {
 		fmt.Printf("source:%s - result:%s \r\n", v, Reverse(v))
 	}
 }
+
+func ExampleAt() {
+	res1 := At("你好，世界", 0)
+	res2 := At("hello word", 3)
+	res3 := At("goland", 3)
+	res4 := At("goland", -1)
+
+	fmt.Println(res1)
+	fmt.Println(res2)
+	fmt.Println(res3)
+	fmt.Println(res4 == "")
+
+	// Output:
+	// 你
+	// l
+	// a
+	// true
+}

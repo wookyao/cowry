@@ -262,3 +262,18 @@ func Wrap(s, chars string) string {
 func UnWrap(s, chars string) string {
 	return Trim(s, chars)
 }
+
+// At 获取指定下标的值
+func At(str string, idx int) string {
+	if len(str) < idx+1 {
+		return ""
+	}
+
+	for index, v := range str {
+		if idx == index {
+			return string(v)
+		}
+	}
+
+	return ""
+}
