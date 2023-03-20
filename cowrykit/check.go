@@ -42,18 +42,6 @@ func IsFunc(elem interface{}) bool {
 
 }
 
-// IsNil 判断是否是nil值
-func IsNil(elem interface{}) bool {
-	v := reflect.ValueOf(elem)
-
-	switch v.Kind() {
-	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
-		return v.IsNil()
-	default:
-		return false
-	}
-}
-
 // IsEqual 判断相比较的元素是否相等
 func IsEqual(src, dst interface{}) bool {
 	if src == nil || dst == nil {
